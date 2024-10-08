@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { Layer, Stage, Image as KonvaImage } from "react-konva";
+import React, { useEffect, useRef, useState } from "react";
+import { Layer, Stage, Image as KonvaImage, Transformer } from "react-konva";
 import Konva from "konva";
 import { useImages } from "@/app/hooks/useImages";
 import { Button } from "@mui/material";
@@ -8,6 +8,9 @@ import { VisuallyHiddenInput } from "./styled";
 const LayoutCreator = () => {
   const { importedImages, setImportedImages } = useImages();
   const importedImagesRef = useRef(importedImages);
+  const transformerRef = useRef<Konva.Transformer>(null);
+  const [selectedImageId, setSelectedImageId] = useState<number | null>(null);
+
   importedImagesRef.current = importedImages;
 
   const loadImages = React.useCallback(async () => {
@@ -35,6 +38,16 @@ const LayoutCreator = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [importedImages.length]);
+
+  useEffect(() => {
+    if (transformerRef.current && selectedImageId !== null) {
+      const selectedNode = Konva.stages[0].findOne(`#image-${selectedImageId}`);
+      if (selectedNode) {
+        transformerRef.current.nodes([selectedNode]);
+      }
+      transformerRef.current.getLayer()?.batchDraw();
+    }
+  }, [selectedImageId]);
 
   const handleDragEnd = (
     e: Konva.KonvaEventObject<DragEvent>,
@@ -80,7 +93,6 @@ const LayoutCreator = () => {
         role={undefined}
         variant="contained"
         tabIndex={-1}
-        //   startIcon={<CloudUploadIcon />}
       >
         Upload Image(s)
         <VisuallyHiddenInput type="file" onChange={handleFileChange} multiple />
@@ -92,6 +104,11 @@ const LayoutCreator = () => {
         width={window.innerWidth}
         height={window.innerHeight}
         style={{ border: "1px solid red" }}
+        onMouseDown={(e) => {
+          if (e.target === e.target.getStage()) {
+            setSelectedImageId(null);
+          }
+        }}
       >
         <Layer>
           {importedImages.map(
@@ -99,6 +116,7 @@ const LayoutCreator = () => {
               image.img && (
                 <KonvaImage
                   key={index}
+                  id={`image-${index}`}
                   image={image.img}
                   x={image.x}
                   y={image.y}
@@ -106,10 +124,12 @@ const LayoutCreator = () => {
                   height={200}
                   draggable
                   onDragEnd={(e) => handleDragEnd(e, index)}
+                  onClick={() => setSelectedImageId(index)}
                   className="image-border"
                 />
               )
           )}
+          {selectedImageId !== null && <Transformer ref={transformerRef} />}
         </Layer>
       </Stage>
     </>
