@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useRef } from "react";
 import { Layer, Stage, Image as KonvaImage } from "react-konva";
 import Konva from "konva";
 import { useImages } from "@/app/hooks/useImages";
@@ -7,30 +7,12 @@ import { VisuallyHiddenInput } from "./styled";
 
 const LayoutCreator = () => {
   const { importedImages, setImportedImages } = useImages();
-
-  const modifiedImages = useMemo(() => {
-    if (!importedImages?.length) {
-      return [];
-    }
-    return importedImages.map((image) => ({
-      src: image,
-      x: 20,
-      y: 20,
-      img: null,
-    }));
-  }, [importedImages]);
-
-  const [images, setImages] = useState<
-    { src: string; x: number; y: number; img: HTMLImageElement | null }[]
-  >([]);
-
-  useEffect(() => {
-    setImages(modifiedImages);
-  }, [modifiedImages]);
+  const importedImagesRef = useRef(importedImages);
+  importedImagesRef.current = importedImages;
 
   const loadImages = React.useCallback(async () => {
     const loadedImages = await Promise.all(
-      images.map((image) => {
+      importedImagesRef.current.map((image) => {
         return new Promise<HTMLImageElement>((resolve) => {
           const img = new window.Image();
           img.src = image.src;
@@ -39,28 +21,30 @@ const LayoutCreator = () => {
       })
     );
 
-    setImages((prevImages) =>
-      prevImages.map((image, index) => ({
+    setImportedImages(
+      importedImagesRef.current.map((image, index) => ({
         ...image,
         img: loadedImages[index],
       }))
     );
-  }, [images]);
+  }, [setImportedImages]);
 
   useEffect(() => {
-    if (images.length > 0) {
+    if (importedImages.length > 0) {
       loadImages();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [images]);
+  }, [importedImages.length]);
 
   const handleDragEnd = (
     e: Konva.KonvaEventObject<DragEvent>,
     index: number
   ) => {
     const { x, y } = e.target.position();
-    setImages((prevImages) =>
-      prevImages.map((image, i) => (i === index ? { ...image, x, y } : image))
+    setImportedImages(
+      importedImages.map((image, i) =>
+        i === index ? { ...image, x, y } : image
+      )
     );
   };
 
@@ -70,12 +54,12 @@ const LayoutCreator = () => {
       const src = URL.createObjectURL(file);
       return {
         src,
-        x: 20 * (images.length + index),
-        y: 20 * (images.length + index),
+        x: 20 * (importedImages.length + index),
+        y: 20 * (importedImages.length + index),
         img: null,
       };
     });
-    setImages((prevImages) => [...prevImages, ...newImages]);
+    setImportedImages([...importedImages, ...newImages]);
   };
 
   const exportCanvas = () => {
@@ -110,7 +94,7 @@ const LayoutCreator = () => {
         style={{ border: "1px solid red" }}
       >
         <Layer>
-          {images.map(
+          {importedImages.map(
             (image, index) =>
               image.img && (
                 <KonvaImage
