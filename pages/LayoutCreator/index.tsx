@@ -78,6 +78,17 @@ const LayoutCreator = () => {
     setImages((prevImages) => [...prevImages, ...newImages]);
   };
 
+  const exportCanvas = () => {
+    const stage = Konva.stages[0];
+    const dataURL = stage.toDataURL();
+    const link = document.createElement("a");
+    link.download = "canvas.png";
+    link.href = dataURL;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <>
       <Button
@@ -89,6 +100,9 @@ const LayoutCreator = () => {
       >
         Upload Image(s)
         <VisuallyHiddenInput type="file" onChange={handleFileChange} multiple />
+      </Button>
+      <Button variant="contained" onClick={exportCanvas}>
+        Export Canvas
       </Button>
       <Stage
         width={window.innerWidth}
