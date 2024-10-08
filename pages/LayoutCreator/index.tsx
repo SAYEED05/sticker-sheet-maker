@@ -1,18 +1,32 @@
-import Link from "next/link";
-import React, { useState, useEffect } from "react";
-import sample1 from "@/app/assets/sample-1.png";
-import sample2 from "@/app/assets/sample-2.png"; // Add more sample images as needed
+import React, { useState, useEffect, useMemo } from "react";
 import { Layer, Stage, Image as KonvaImage } from "react-konva";
 import Konva from "konva";
+import { useImages } from "@/app/hooks/useImages";
+import { Button } from "@mui/material";
+import { VisuallyHiddenInput } from "./styled";
 
 const LayoutCreator = () => {
+  const { importedImages, setImportedImages } = useImages();
+
+  const modifiedImages = useMemo(() => {
+    if (!importedImages?.length) {
+      return [];
+    }
+    return importedImages.map((image) => ({
+      src: image,
+      x: 20,
+      y: 20,
+      img: null,
+    }));
+  }, [importedImages]);
+
   const [images, setImages] = useState<
     { src: string; x: number; y: number; img: HTMLImageElement | null }[]
-  >([
-    { src: sample1.src, x: 20, y: 20, img: null },
-    { src: sample2.src, x: 240, y: 20, img: null },
-    // Add more images with different positions as needed
-  ]);
+  >([]);
+
+  useEffect(() => {
+    setImages(modifiedImages);
+  }, [modifiedImages]);
 
   const loadImages = React.useCallback(async () => {
     const loadedImages = await Promise.all(
@@ -34,9 +48,11 @@ const LayoutCreator = () => {
   }, [images]);
 
   useEffect(() => {
-    loadImages();
+    if (images.length > 0) {
+      loadImages();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [images]);
 
   const handleDragEnd = (
     e: Konva.KonvaEventObject<DragEvent>,
@@ -48,11 +64,32 @@ const LayoutCreator = () => {
     );
   };
 
-  console.log("first");
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const newImages = files.map((file, index) => {
+      const src = URL.createObjectURL(file);
+      return {
+        src,
+        x: 20 * (images.length + index),
+        y: 20 * (images.length + index),
+        img: null,
+      };
+    });
+    setImages((prevImages) => [...prevImages, ...newImages]);
+  };
 
   return (
     <>
-      <Link href="/">Home</Link>
+      <Button
+        component="label"
+        role={undefined}
+        variant="contained"
+        tabIndex={-1}
+        //   startIcon={<CloudUploadIcon />}
+      >
+        Upload Image(s)
+        <VisuallyHiddenInput type="file" onChange={handleFileChange} multiple />
+      </Button>
       <Stage
         width={window.innerWidth}
         height={window.innerHeight}
