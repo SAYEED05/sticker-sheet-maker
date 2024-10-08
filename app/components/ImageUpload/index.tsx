@@ -39,15 +39,6 @@ const ImageUpload = () => {
           height={200}
         />
       ))}
-      <div
-        style={{
-          //a4-sheet dimension
-          width: "210mm",
-          height: "297mm",
-          background: "red",
-          transform: "rotate(90deg)",
-        }}
-      ></div>
     </>
   );
 };

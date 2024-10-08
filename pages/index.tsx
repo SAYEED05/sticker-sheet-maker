@@ -1,12 +1,16 @@
 import ImageUpload from "@/app/components/ImageUpload";
-import Link from "next/link";
 import React from "react";
+import dynamic from "next/dynamic";
 
+const LayoutCreatorComponent = dynamic(() => import("./LayoutCreator"), {
+  ssr: false,
+  loading: () => <p>Loading...</p>,
+});
 const Home = () => {
   return (
     <>
-      <Link href="/LayoutCreator">to layout creator</Link>
       <ImageUpload />
+      <LayoutCreatorComponent />
     </>
   );
 };
