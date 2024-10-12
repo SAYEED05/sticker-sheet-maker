@@ -10,4 +10,8 @@ export const CanvasWrapper = styled("div")({
   overflow: "scroll",
   height: "100%",
   padding: "20px",
+  ".konvajs-content": {
+    width: "210mm",
+    height: "297mm",
+  },
 });

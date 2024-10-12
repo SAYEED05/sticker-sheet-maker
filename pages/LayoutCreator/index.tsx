@@ -16,7 +16,6 @@ const LayoutCreator = () => {
   } = useImages();
   const importedImagesRef = useRef(importedImages);
   const transformerRef = useRef<Konva.Transformer>(null);
-
   importedImagesRef.current = importedImages;
 
   const loadImages = React.useCallback(async () => {
@@ -60,8 +59,10 @@ const LayoutCreator = () => {
       <Sidebar />
       <CanvasWrapper>
         <Stage
-          width={window.innerWidth}
-          height={window.innerHeight}
+          width={1122}
+          height={793}
+          /*    width={793}
+          height={1122} */
           style={{ background: "#B9BAA3" }}
           onMouseDown={(e) => {
             if (e.target === e.target.getStage()) {

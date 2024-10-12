@@ -21,7 +21,7 @@ const Sidebar = () => {
               width: "24px",
               color: "#000",
               position: "absolute",
-              backgroundColor: "importedImages",
+              backgroundColor: "#B9BAA3",
               borderRadius: "50%",
               left: "36px",
               display: "flex",
