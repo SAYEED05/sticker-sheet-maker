@@ -6,4 +6,6 @@ export const useImageStore = create<ImageStore>((set) => ({
   setImportedImages: (images: ImageStore["importedImages"]) =>
     set({ importedImages: images }),
   reset: () => set({ importedImages: [] }),
+  selectedImage: null,
+  setSelectedImage: (image) => set({ selectedImage: image }),
 }));
