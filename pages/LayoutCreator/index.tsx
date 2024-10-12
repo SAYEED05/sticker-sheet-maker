@@ -59,8 +59,8 @@ const LayoutCreator = () => {
       <Sidebar />
       <CanvasWrapper>
         <Stage
-          width={1122}
-          height={793}
+          width={3.779528 * 210}
+          height={3.779528 * 297}
           /*    width={793}
           height={1122} */
           style={{ background: "#B9BAA3" }}
