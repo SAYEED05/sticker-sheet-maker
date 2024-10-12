@@ -5,14 +5,33 @@ import React from "react";
 import { VisuallyHiddenInput, Wrapper } from "./styled";
 import useUi from "@/app/hooks/useUi";
 import { useImages } from "@/app/hooks/useImages";
+import { Typography } from "@mui/material";
 
 const Sidebar = () => {
   const { setIsModalOpen, isModalOpen } = useUi();
-  const { exportCanvas, handleFileChange } = useImages();
+  const { exportCanvas, handleFileChange, importedImages } = useImages();
 
   return (
     <Wrapper>
-      <label htmlFor="file-upload">
+      <label htmlFor="file-upload" style={{ position: "relative" }}>
+        {importedImages?.length && (
+          <div
+            style={{
+              height: "24px",
+              width: "24px",
+              color: "#000",
+              position: "absolute",
+              backgroundColor: "importedImages",
+              borderRadius: "50%",
+              left: "36px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography fontSize={12}>{importedImages?.length}</Typography>
+          </div>
+        )}
         <UploadIcon />
         <VisuallyHiddenInput
           id="file-upload"
