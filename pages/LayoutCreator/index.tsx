@@ -4,6 +4,7 @@ import Konva from "konva";
 import { useImages } from "@/app/hooks/useImages";
 import { Wrapper, CanvasWrapper } from "./styled";
 import Sidebar from "@/app/components/Sidebar";
+import CanvasSettingsModal from "@/app/components/CanvasSettingsModal";
 
 const LayoutCreator = () => {
   const {
@@ -91,6 +92,7 @@ const LayoutCreator = () => {
           </Layer>
         </Stage>
       </CanvasWrapper>
+      <CanvasSettingsModal />
     </Wrapper>
   );
 };

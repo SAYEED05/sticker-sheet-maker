@@ -21,7 +21,7 @@ const Sidebar = () => {
           multiple
         />
       </label>
-      <SettingsIcon onClick={() => setIsModalOpen(isModalOpen)} />
+      <SettingsIcon onClick={() => setIsModalOpen(!isModalOpen)} />
       <DownloadIcon onClick={() => exportCanvas()} />
     </Wrapper>
   );
