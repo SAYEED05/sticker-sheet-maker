@@ -22,28 +22,14 @@ export const useImages = (): UseImagesReturnType => {
 
   const exportCanvas = () => {
     const stage = Konva.stages[0];
-    const layer = stage.getLayers()[0];
-    const background = new Konva.Rect({
-      x: 0,
-      y: 0,
-      width: stage.width(),
-      height: stage.height(),
-      fill: "#B9BAA3", // Set your desired background color here
-    });
-
-    layer.add(background);
-    layer.draw();
-
-    const dataURL = stage.toDataURL();
+    const scale = 2; // Increase the scale for higher resolution
+    const dataURL = stage.toDataURL({ pixelRatio: scale });
     const link = document.createElement("a");
     link.download = "canvas.png";
     link.href = dataURL;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-
-    background.destroy(); // Clean up the background rectangle after export
-    layer.draw();
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

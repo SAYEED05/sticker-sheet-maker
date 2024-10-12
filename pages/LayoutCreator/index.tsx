@@ -80,8 +80,6 @@ const LayoutCreator = () => {
                     image={image.img}
                     x={image.x}
                     y={image.y}
-                    width={200}
-                    height={200}
                     draggable
                     onDragEnd={(e) => handleDragEnd(e, index)}
                     onClick={() => setSelectedImage(index)}
